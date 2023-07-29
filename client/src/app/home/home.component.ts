@@ -8,25 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   registerMode = false;
-  users: any;
 
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
-    
-    this.getUser();
   }
 
   registerToogle() {
     this.registerMode = !this.registerMode;
-  }
-
-  getUser() {
-    this.http.get('https://localhost:5001/api/users').subscribe({
-      next: response => this.users = response,
-       error: error => console.log(error),
-       complete: () => console.log('Request has completed')
-    })
   }
 
   cancelRegisterMode(event: boolean) {
