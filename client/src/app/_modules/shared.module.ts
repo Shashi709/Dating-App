@@ -6,6 +6,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { FileUploadModule } from 'ng2-file-upload';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [],
@@ -18,7 +20,10 @@ import { FileUploadModule } from 'ng2-file-upload';
     }),
     NgxGalleryModule,
     NgxSpinnerModule.forRoot({ type: 'line-scale-party' }),
-    FileUploadModule
+    FileUploadModule,
+    BrowserAnimationsModule,
+    BsDatepickerModule.forRoot()
+    
   ],
   exports: [
     BsDropdownModule,
@@ -26,7 +31,9 @@ import { FileUploadModule } from 'ng2-file-upload';
     TabsModule,
     NgxGalleryModule,
     NgxSpinnerModule,
-    FileUploadModule
+    FileUploadModule,
+    BrowserAnimationsModule,
+    BsDatepickerModule
   ]
 })
 export class SharedModule { }

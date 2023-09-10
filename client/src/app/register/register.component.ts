@@ -1,7 +1,9 @@
-import { Component, EventEmitter,  OnInit, Output } from '@angular/core';
+import { Component, EventEmitter,  Input,  OnInit, Output } from '@angular/core';
 import { AccountService } from '../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -10,15 +12,22 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Vali
 })
 export class RegisterComponent implements OnInit {
   @Output() cancelReister = new EventEmitter();
-  model: any = {};
   registerForm: FormGroup = new FormGroup({}) ;
+  bsConfig: Partial<BsDatepickerConfig> | undefined;
+  maxDate: Date = new Date();
+  validationErrors: string[] | undefined;
 
   constructor(private accountService:AccountService, 
     private toaster: ToastrService, 
-    private fb: FormBuilder) { }
+    private fb: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
     this.initializeForm();
+    this.maxDate.setFullYear(this.maxDate.getFullYear() -18);
+    this.bsConfig = {
+      containerClass: 'theme-red',
+      dateInputFormat: 'DD MMMM YYYY'
+    }
   }
 
   initializeForm () {
@@ -44,19 +53,27 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    console.log(this.registerForm?.value);
-    // this.accountService.register(this.model).subscribe({
-    //   next: () => {
-    //     this.cancel();
-    //   },
-    //   error: error => {
-    //     this.toaster.error(error.error);
-    //     console.log(error);
-    //   }
-    // })
+    const dob = this.getDateOnly(this.registerForm.controls['dateOfBirth'].value); 
+    const values = {...this.registerForm.value, dateOfBirth:dob}
+    console.log(values);
+    this.accountService.register(values).subscribe({
+      next: () => {
+        this.router.navigateByUrl('/members')
+      },
+      error: error => {
+        this.validationErrors = error;
+      }
+    })
   }
+
   cancel() {
     this.cancelReister.emit(false);
   }
 
+  private getDateOnly(dob: string | undefined) {
+    if(!dob) return;
+    let thedob = new Date(dob);
+    return new Date(thedob.setMinutes(thedob.getMinutes()-thedob.getTimezoneOffset()))
+      .toISOString().slice(0,10);
+  }  
 }
