@@ -33,7 +33,6 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
     HomeComponent,
     RegisterComponent,
     MemberListComponent,
-    MemberDetailComponent,
     ListsComponent,
     MessagesComponent,
     TestErrorComponent,
@@ -43,7 +42,7 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
     MemberEditComponent,
     PhotoEditorComponent,
     TextInputComponent,
-    DatePickerComponent
+    DatePickerComponent,
   ],
   imports: [
     BrowserAnimationsModule,
