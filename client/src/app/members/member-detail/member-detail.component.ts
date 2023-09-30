@@ -1,10 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryModule, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { TabDirective, TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { Member } from 'src/app/_models/member';
-import { MembersService } from 'src/app/_services/members.service';
 import { TimeagoModule } from 'ngx-timeago';
 import { MemberMessagesComponent } from '../member-messages/member-messages.component';
 import { MessageService } from 'src/app/_services/message.service';
@@ -13,22 +11,22 @@ import { PresenceService } from 'src/app/_services/presence.service';
 import { AccountService } from 'src/app/_services/account.service';
 import { User } from 'src/app/_models/user';
 import { take } from 'rxjs';
+import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
 
 @Component({
   selector: 'app-member-detail',
   standalone: true,
   templateUrl: './member-detail.component.html',
   styleUrls: ['./member-detail.component.css'],
-  imports: [CommonModule, TabsModule,TimeagoModule, MemberMessagesComponent, NgxGalleryModule]
+  imports: [CommonModule, TabsModule,TimeagoModule, MemberMessagesComponent, GalleryModule]
 })
 export class MemberDetailComponent implements OnInit , OnDestroy {
   @ViewChild('memberTabs', {static: true}) memberTabs?: TabsetComponent;
   member: Member = {} as Member;
-  galleryOptions:NgxGalleryOptions[] = [];
-  galleryImages: NgxGalleryImage[] = [];
   activeTab?: TabDirective;
   messages: Message[] = [];  
   user?: User;
+  images: GalleryItem[] = [];
 
   constructor(private accountService: AccountService, private route:ActivatedRoute, 
     private messageService: MessageService, public presenceService: PresenceService) { 
@@ -50,18 +48,7 @@ export class MemberDetailComponent implements OnInit , OnDestroy {
       }
     })
 
-    this.galleryOptions = [
-      {
-        width: '500px',
-        height: '500px',
-        imagePercent: 100,
-        thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Slide,
-        preview: false
-      }
-    ]
-
-    this.galleryImages = this.getImages();
+    this.getImages();
 
   }
 
@@ -70,17 +57,12 @@ export class MemberDetailComponent implements OnInit , OnDestroy {
   }
 
   getImages() {
-    if(!this.member) return [];
+    if(!this.member) return;
     const imageUrl = [];
     for(const photo of this.member.photos)
     {
-      imageUrl.push({
-        small: photo.url,
-        medium: photo.url,
-        big: photo.url
-      })
+      this.images.push(new ImageItem({src: photo.url, thumb: photo.url}))
     }
-    return imageUrl;
   }
 
   loadMessages() {
